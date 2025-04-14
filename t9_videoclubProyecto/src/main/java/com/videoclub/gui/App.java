@@ -7,8 +7,10 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
-import com.videoclub.dao.VideoclubDAO;
+import com.videoclub.dao.PeliculaDAO;
+import com.videoclub.dao.UsuarioDAO;
 import com.videoclub.model.Pelicula;
 import com.videoclub.model.Usuario;
 
@@ -16,6 +18,9 @@ import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Component;
 
 public class App {
 
@@ -30,6 +35,7 @@ public class App {
 	private JTextField txtDuracionP;
 	private JTextField txtGeneroP;
 	private JTextField txtYearP;
+	private JTextField textField;
 
 	/**
 	 * Launch the application.
@@ -46,6 +52,13 @@ public class App {
 			}
 		});
 	}
+	
+	
+	static void actualizarTablaUser() {
+		
+	}
+	
+	
 
 	/**
 	 * Create the application.
@@ -60,10 +73,11 @@ public class App {
 	private void initialize() {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(239, 189, 228));
-		frame.setBounds(100, 100, 450, 529);
+		frame.setBounds(100, 100, 981, 529);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		VideoclubDAO videoclubDAO=new VideoclubDAO();
+		UsuarioDAO usuarioDAO=new UsuarioDAO();
+		PeliculaDAO peliculaDAO=new PeliculaDAO();
 		Pelicula pelicula=new Pelicula();
 		Usuario usuario=new Usuario();
 		
@@ -78,7 +92,7 @@ public class App {
 		modeloPeli.addColumn("año");
 		
 			//sustituto del try/catch de jdbc
-		List<Pelicula> peliculas=videoclubDAO.selectAllPeliculas();
+		List<Pelicula> peliculas=peliculaDAO.selectAllPeliculas();
 		
 		for(Pelicula pe:peliculas) {
 			Object[]fila= {pe.getCodigo(), pe.getNombre(), pe.getDuracion(), pe.getGenero(), pe.getYear()};
@@ -88,13 +102,26 @@ public class App {
 			//crear tabla en interfaz
 		JTable tablaPeli=new JTable(modeloPeli);
 		tablaPeli.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+		tablaPeli.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int index=tablaPeli.getSelectedRow();
+				TableModel model=tablaPeli.getModel();
+				
+				txtCodP.setText(modeloPeli.getValueAt(index,0).toString());
+				txtNomP.setText(modeloPeli.getValueAt(index, 1).toString());
+				txtDuracionP.setText(modeloPeli.getValueAt(index, 2).toString());
+				txtGeneroP.setText(modeloPeli.getValueAt(index, 3).toString());
+				txtYearP.setText(modeloPeli.getValueAt(index, 4).toString());
+			}
+		});
 		
 		JScrollPane scrollPanePeli=new JScrollPane(tablaPeli);
-		scrollPanePeli.setBounds(241, 12, 197, 90);
+		scrollPanePeli.setBounds(43, 12, 296, 90);
 		frame.getContentPane().add(scrollPanePeli);
 		
 		
-		//TABLA PELICULA
+		//TABLA USUARIO
 		//modelo
 	DefaultTableModel modeloUser = new DefaultTableModel();
 	modeloUser.addColumn("id");
@@ -104,7 +131,7 @@ public class App {
 	modeloUser.addColumn("telefono");
 	
 		//sustituto del try/catch de jdbc
-	List<Usuario> usuarios=videoclubDAO.selectAllUsuarios();
+	List<Usuario> usuarios=usuarioDAO.selectAllUsuarios();
 	
 	for(Usuario us:usuarios) {
 		Object[]fila= {us.getId(), us.getNombre(), us.getApellido(), us.getEdad(), us.getTelefono()};
@@ -114,124 +141,359 @@ public class App {
 		//crear tabla en interfaz
 	JTable tablaUser=new JTable(modeloUser);
 	tablaUser.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+	tablaUser.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			int index=tablaUser.getSelectedRow();
+			TableModel model=tablaUser.getModel();
+			
+			txtIDu.setText(modeloUser.getValueAt(index,0).toString());
+			txtnomU.setText(modeloUser.getValueAt(index, 1).toString());
+			txtApeU.setText(modeloUser.getValueAt(index, 2).toString());
+			txtEdadU.setText(modeloUser.getValueAt(index, 3).toString());
+			txtTlfU.setText(modeloUser.getValueAt(index, 4).toString());
+		}
+	});
 	
 	JScrollPane scrollPaneUser=new JScrollPane(tablaUser);
-	scrollPaneUser.setBounds(12, 12, 197, 90);
+	scrollPaneUser.setBounds(593, 12, 296, 90);
 	frame.getContentPane().add(scrollPaneUser);
 	
+	
+	//LABEL
 	JLabel lblId = new JLabel("id");
-	lblId.setBounds(251, 114, 70, 15);
+	lblId.setBounds(702, 114, 70, 15);
 	frame.getContentPane().add(lblId);
 	
 	JLabel lblNombre = new JLabel("nombre");
-	lblNombre.setBounds(251, 141, 70, 15);
+	lblNombre.setBounds(702, 141, 70, 15);
 	frame.getContentPane().add(lblNombre);
 	
 	JLabel lblApellido = new JLabel("apellido");
-	lblApellido.setBounds(251, 168, 70, 15);
+	lblApellido.setBounds(702, 168, 70, 15);
 	frame.getContentPane().add(lblApellido);
 	
 	JLabel lblEdad = new JLabel("edad");
-	lblEdad.setBounds(251, 195, 70, 15);
+	lblEdad.setBounds(702, 195, 70, 15);
 	frame.getContentPane().add(lblEdad);
 	
 	JLabel lblTelefono = new JLabel("telefono");
-	lblTelefono.setBounds(251, 222, 70, 15);
+	lblTelefono.setBounds(702, 222, 70, 15);
 	frame.getContentPane().add(lblTelefono);
 	
 	JLabel lblNewLabel = new JLabel("codigo");
-	lblNewLabel.setBounds(12, 114, 70, 15);
+	lblNewLabel.setBounds(43, 118, 70, 15);
 	frame.getContentPane().add(lblNewLabel);
 	
 	JLabel lblNombre_1 = new JLabel("nombre");
-	lblNombre_1.setBounds(12, 141, 70, 15);
+	lblNombre_1.setBounds(43, 141, 70, 15);
 	frame.getContentPane().add(lblNombre_1);
 	
 	JLabel lblDuracion = new JLabel("duracion");
-	lblDuracion.setBounds(12, 168, 70, 15);
+	lblDuracion.setBounds(43, 168, 70, 15);
 	frame.getContentPane().add(lblDuracion);
 	
 	JLabel lblEdad_1 = new JLabel("genero");
-	lblEdad_1.setBounds(12, 195, 70, 15);
+	lblEdad_1.setBounds(215, 141, 70, 15);
 	frame.getContentPane().add(lblEdad_1);
 	
 	JLabel lblAo = new JLabel("año");
-	lblAo.setBounds(12, 222, 70, 15);
+	lblAo.setBounds(215, 168, 70, 15);
 	frame.getContentPane().add(lblAo);
 	
+	//TEXTFIELDS
 	txtIDu = new JTextField();
-	txtIDu.setBounds(324, 112, 114, 19);
+	txtIDu.setEditable(false);
+	txtIDu.setBounds(775, 112, 114, 19);
 	frame.getContentPane().add(txtIDu);
 	txtIDu.setColumns(10);
 	
 	txtnomU = new JTextField();
 	txtnomU.setColumns(10);
-	txtnomU.setBounds(324, 139, 114, 19);
+	txtnomU.setBounds(775, 139, 114, 19);
 	frame.getContentPane().add(txtnomU);
 	
 	txtApeU = new JTextField();
 	txtApeU.setColumns(10);
-	txtApeU.setBounds(324, 166, 114, 19);
+	txtApeU.setBounds(775, 166, 114, 19);
 	frame.getContentPane().add(txtApeU);
 	
 	txtEdadU = new JTextField();
 	txtEdadU.setColumns(10);
-	txtEdadU.setBounds(324, 193, 114, 19);
+	txtEdadU.setBounds(775, 193, 114, 19);
 	frame.getContentPane().add(txtEdadU);
 	
 	txtTlfU = new JTextField();
 	txtTlfU.setColumns(10);
-	txtTlfU.setBounds(324, 220, 114, 19);
+	txtTlfU.setBounds(775, 220, 114, 19);
 	frame.getContentPane().add(txtTlfU);
 	
 	txtCodP = new JTextField();
+	txtCodP.setEditable(false);
 	txtCodP.setColumns(10);
-	txtCodP.setBounds(95, 110, 114, 19);
+	txtCodP.setBounds(126, 114, 79, 19);
 	frame.getContentPane().add(txtCodP);
 	
 	txtNomP = new JTextField();
 	txtNomP.setColumns(10);
-	txtNomP.setBounds(95, 137, 114, 19);
+	txtNomP.setBounds(126, 137, 79, 19);
 	frame.getContentPane().add(txtNomP);
 	
 	txtDuracionP = new JTextField();
 	txtDuracionP.setColumns(10);
-	txtDuracionP.setBounds(95, 164, 114, 19);
+	txtDuracionP.setBounds(126, 164, 79, 19);
 	frame.getContentPane().add(txtDuracionP);
 	
 	txtGeneroP = new JTextField();
 	txtGeneroP.setColumns(10);
-	txtGeneroP.setBounds(95, 191, 114, 19);
+	txtGeneroP.setBounds(298, 137, 79, 19);
 	frame.getContentPane().add(txtGeneroP);
 	
 	txtYearP = new JTextField();
 	txtYearP.setColumns(10);
-	txtYearP.setBounds(95, 218, 114, 19);
+	txtYearP.setBounds(298, 164, 79, 19);
 	frame.getContentPane().add(txtYearP);
 	
-	JButton btnAddP = new JButton("+");
-	btnAddP.setBounds(51, 258, 58, 25);
-	frame.getContentPane().add(btnAddP);
+	//BOTON
+	JButton btnAddUs = new JButton("+");
+	btnAddUs.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Usuario usuIns=new Usuario();
+			String nombre=txtnomU.getText();
+			String ape=txtApeU.getText();
+			int edad=Integer.parseInt(txtEdadU.getText());
+			int tlf=Integer.parseInt(txtTlfU.getText());
+			
+			//actualizar clase usuario
+			usuIns=new Usuario(nombre, ape, edad, tlf);
+			
+			//actualizar base de datos
+			usuarioDAO.insertUsuario(usuIns);
+			
+			//actualizar la tabla instantaneamente
+			modeloUser.setRowCount(0);
+			List<Usuario> usuarios=usuarioDAO.selectAllUsuarios();
+			
+			for(Usuario us:usuarios) {
+				Object[]fila= {us.getId(), us.getNombre(), us.getApellido(), us.getEdad(), us.getTelefono()};
+				modeloUser.addRow(fila);
+			}
+			txtnomU.setText("");
+			txtApeU.setText("");
+			txtEdadU.setText("");
+			txtTlfU.setText("");
+			txtIDu.setText("");
+		}
+	});
+	btnAddUs.setBounds(735, 249, 58, 25);
+	frame.getContentPane().add(btnAddUs);
 	
-	JButton btndelP = new JButton("-");
-	btndelP.setBounds(118, 258, 58, 25);
-	frame.getContentPane().add(btndelP);
+	JButton btndelUs = new JButton("-");
+	btndelUs.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Usuario usuDel=new Usuario();
+			
+			//coger el ID del textfield rellenado
+			int id=Integer.parseInt(txtIDu.getText());
+			
+			//Encontrar el objeto
+			usuDel=usuarioDAO.selectUserById(id);
+			
+			//eliminar el objeto
+			usuarioDAO.deleteUsuario(id);
+			
+			//actualizar tabla
+			modeloUser.setRowCount(0);
+			List<Usuario> usuarios=usuarioDAO.selectAllUsuarios();
+			
+			for(Usuario us:usuarios) {
+				Object[]fila= {us.getId(), us.getNombre(), us.getApellido(), us.getEdad(), us.getTelefono()};
+				modeloUser.addRow(fila);
+			}
+			txtnomU.setText("");
+			txtApeU.setText("");
+			txtEdadU.setText("");
+			txtTlfU.setText("");
+			txtIDu.setText("");
+		}
+	});
+	btndelUs.setBounds(802, 249, 58, 25);
+	frame.getContentPane().add(btndelUs);
 	
-	JButton btnAddU = new JButton("+");
-	btnAddU.setBounds(286, 258, 58, 25);
-	frame.getContentPane().add(btnAddU);
+	JButton btnActUs = new JButton("Actualizar");
+	btnActUs.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Usuario usuAct=new Usuario();
+			
+			Usuario usuIns=new Usuario();
+			String nombre=txtnomU.getText();
+			String ape=txtApeU.getText();
+			int edad=Integer.parseInt(txtEdadU.getText());
+			int tlf=Integer.parseInt(txtTlfU.getText());
+			int id=Integer.parseInt(txtIDu.getText());
+			
+			
+			//encontrar el objeto especifico
+			usuAct=usuarioDAO.selectUserById(id);
+			
+			//actualizar la clase
+			usuAct.setNombre(nombre);
+			usuAct.setApellido(ape);
+			usuAct.setEdad(edad);
+			usuAct.setTelefono(tlf);
+			
+			//actualiza los datos en la base de datos
+			usuarioDAO.updateUsuario(usuAct);
+			
+			//actualizar tabla
+			modeloUser.setRowCount(0);
+			List<Usuario> usuarios=usuarioDAO.selectAllUsuarios();
+			
+			for(Usuario us:usuarios) {
+				Object[]fila= {us.getId(), us.getNombre(), us.getApellido(), us.getEdad(), us.getTelefono()};
+				modeloUser.addRow(fila);
+			}
+			txtnomU.setText("");
+			txtApeU.setText("");
+			txtEdadU.setText("");
+			txtTlfU.setText("");
+			txtIDu.setText("");
+		}
+	});
+	btnActUs.setBounds(735, 293, 125, 25);
+	frame.getContentPane().add(btnActUs);
 	
-	JButton btnDelU = new JButton("-");
-	btnDelU.setBounds(353, 258, 58, 25);
-	frame.getContentPane().add(btnDelU);
 	
-	JButton btnActU = new JButton("Actualizar");
-	btnActU.setBounds(286, 302, 125, 25);
-	frame.getContentPane().add(btnActU);
+		//pelicula
+	JButton btnAddPe = new JButton("+");
+	btnAddPe.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Pelicula peliAdd=new Pelicula();
+			
+			String nombre=txtNomP.getText();
+			int duracion=Integer.parseInt(txtDuracionP.getText());
+			String genero=txtGeneroP.getText();
+			int year=Integer.parseInt(txtYearP.getText());
+			
+			//rellenar objeto
+			peliAdd=new Pelicula(nombre, duracion, genero, year);
+			
+			//actualizar base de datos
+			peliculaDAO.insertPelicula(peliAdd);
+			
+			//actualizar la tabla
+			modeloPeli.setRowCount(0);
+			List<Pelicula> peliculas=peliculaDAO.selectAllPeliculas();
+			
+			for(Pelicula pe:peliculas) {
+				Object[]fila= {pe.getCodigo(), pe.getNombre(), pe.getDuracion(), pe.getGenero(), pe.getYear()};
+				modeloPeli.addRow(fila);
+			}
+			txtCodP.setText("");
+			txtNomP.setText("");
+			txtDuracionP.setText("");
+			txtGeneroP.setText("");
+			txtYearP.setText("");
+		}
+	});
+	btnAddPe.setBounds(136, 205, 58, 25);
+	frame.getContentPane().add(btnAddPe);
 	
-	JButton btnActP = new JButton("Actualizar");
-	btnActP.setBounds(51, 302, 125, 25);
-	frame.getContentPane().add(btnActP);
+	JButton btnDelPe = new JButton("-");
+	btnDelPe.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Pelicula peliDel=new Pelicula();
+			int id=Integer.parseInt(txtCodP.getText());
+			
+			//encontrar el objeto especifico
+			peliDel=peliculaDAO.selectPeliById(id);
+			
+			//eliminar de la base de datos
+			peliculaDAO.deletePelicula(id);
+			
+			//actualizar la tabla
+			modeloPeli.setRowCount(0);
+			List<Pelicula> peliculas=peliculaDAO.selectAllPeliculas();
+			
+			for(Pelicula pe:peliculas) {
+				Object[]fila= {pe.getCodigo(), pe.getNombre(), pe.getDuracion(), pe.getGenero(), pe.getYear()};
+				modeloPeli.addRow(fila);
+			}
+			txtCodP.setText("");
+			txtNomP.setText("");
+			txtDuracionP.setText("");
+			txtGeneroP.setText("");
+			txtYearP.setText("");
+		}
+	});
+	btnDelPe.setBounds(203, 205, 58, 25);
+	frame.getContentPane().add(btnDelPe);
+	
+	JButton btnActPe = new JButton("Actualizar");
+	btnActPe.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			Pelicula peliAct=new Pelicula();
+			
+			int id=Integer.parseInt(txtCodP.getText());
+			String nombre=txtNomP.getText();
+			int duracion=Integer.parseInt(txtDuracionP.getText());
+			String genero=txtGeneroP.getText();
+			int year=Integer.parseInt(txtYearP.getText());
+			
+			//encontrar la clase especifica
+			peliAct=peliculaDAO.selectPeliById(id);
+			
+			//actualizar datos en el objeto
+			peliAct.setNombre(nombre);
+			peliAct.setDuracion(duracion);
+			peliAct.setGenero(genero);
+			peliAct.setYear(year);
+			
+			//actualizar base de datos
+			peliculaDAO.updatePelicula(peliAct);
+			
+			//actualizar tabla
+			modeloPeli.setRowCount(0);
+			List<Pelicula> peliculas=peliculaDAO.selectAllPeliculas();
+			
+			for(Pelicula pe:peliculas) {
+				Object[]fila= {pe.getCodigo(), pe.getNombre(), pe.getDuracion(), pe.getGenero(), pe.getYear()};
+				modeloPeli.addRow(fila);
+			}
+			txtCodP.setText("");
+			txtNomP.setText("");
+			txtDuracionP.setText("");
+			txtGeneroP.setText("");
+			txtYearP.setText("");
+		}
+	});
+	btnActPe.setBounds(136, 249, 125, 25);
+	frame.getContentPane().add(btnActPe);
+	
+	JLabel lblAoMinimoPelicula = new JLabel("año minimo pelicula: ");
+	lblAoMinimoPelicula.setBounds(31, 339, 149, 15);
+	frame.getContentPane().add(lblAoMinimoPelicula);
+	
+	textField = new JTextField();
+	textField.setBounds(190, 337, 58, 19);
+	frame.getContentPane().add(textField);
+	textField.setColumns(10);
+	
+	JButton btnFiltrar = new JButton("Filtrar");
+	btnFiltrar.setBounds(260, 334, 79, 25);
+	frame.getContentPane().add(btnFiltrar);
+	
+	JScrollPane scrollPanePeli_1 = new JScrollPane((Component) null);
+	scrollPanePeli_1.setBounds(43, 371, 296, 90);
+	frame.getContentPane().add(scrollPanePeli_1);
+	
+	
 		
 		
 		
