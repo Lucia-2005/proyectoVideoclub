@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import com.videoclub.model.Pelicula;
 import com.videoclub.util.VideoclubUtils;
@@ -89,6 +90,27 @@ public class PeliculaDAO {
 			}catch(Exception e) {
 				if(transaction!=null) {
 					transaction.rollback();			
+				}
+			}
+			return peliculas;
+		}
+		
+		//-----------------------------------------------------------------------------------
+		
+		//seleccionar peliculas a partir de cierto año
+		public List<Pelicula> selectPeliculaSegunYear(int year){
+			Transaction transaction=null;
+			List<Pelicula> peliculas=null;
+			try(Session session=VideoclubUtils.getSessionFactory().openSession()){
+				transaction=session.beginTransaction();
+				//consulta de mysql, pero todos los valores son de la clase
+				Query <Pelicula> query=session.createQuery("FROM Pelicula WHERE year> :yearMin", Pelicula.class);
+				query.setParameter("yearMin", year);
+				peliculas=query.getResultList();
+				transaction.commit();
+			}catch(Exception e) {
+				if(transaction!= null) {
+					transaction.rollback();
 				}
 			}
 			return peliculas;

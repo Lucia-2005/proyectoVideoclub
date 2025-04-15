@@ -21,6 +21,7 @@ import javax.swing.JButton;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Component;
+import javax.swing.JCheckBox;
 
 public class App {
 
@@ -35,7 +36,7 @@ public class App {
 	private JTextField txtDuracionP;
 	private JTextField txtGeneroP;
 	private JTextField txtYearP;
-	private JTextField textField;
+	private JTextField txtYearMin;
 
 	/**
 	 * Launch the application.
@@ -73,7 +74,7 @@ public class App {
 	private void initialize() {
 		frame = new JFrame();
 		frame.getContentPane().setBackground(new Color(239, 189, 228));
-		frame.setBounds(100, 100, 981, 529);
+		frame.setBounds(100, 100, 1100, 650);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		UsuarioDAO usuarioDAO=new UsuarioDAO();
@@ -117,7 +118,7 @@ public class App {
 		});
 		
 		JScrollPane scrollPanePeli=new JScrollPane(tablaPeli);
-		scrollPanePeli.setBounds(43, 12, 296, 90);
+		scrollPanePeli.setBounds(43, 66, 296, 90);
 		frame.getContentPane().add(scrollPanePeli);
 		
 		
@@ -156,102 +157,136 @@ public class App {
 	});
 	
 	JScrollPane scrollPaneUser=new JScrollPane(tablaUser);
-	scrollPaneUser.setBounds(593, 12, 296, 90);
+	scrollPaneUser.setBounds(388, 66, 296, 90);
 	frame.getContentPane().add(scrollPaneUser);
+	
+	
+		//TABLA PELICULAS FILTRADAS
+		//modelo
+		DefaultTableModel modeloYearPeli = new DefaultTableModel();
+		modeloYearPeli.addColumn("codigo");
+		modeloYearPeli.addColumn("nombre");
+		modeloYearPeli.addColumn("duracion");
+		modeloYearPeli.addColumn("genero");
+		modeloYearPeli.addColumn("año");
+	
+	JTable tablaYearPeli=new JTable(modeloYearPeli);
+	tablaYearPeli.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+	tablaYearPeli.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			int index=tablaYearPeli.getSelectedRow();
+			TableModel model=tablaYearPeli.getModel();
+			
+			txtCodP.setText(modeloYearPeli.getValueAt(index,0).toString());
+			txtNomP.setText(modeloYearPeli.getValueAt(index, 1).toString());
+			txtDuracionP.setText(modeloYearPeli.getValueAt(index, 2).toString());
+			txtGeneroP.setText(modeloYearPeli.getValueAt(index, 3).toString());
+			txtYearP.setText(modeloYearPeli.getValueAt(index, 4).toString());
+		}	
+	});
+	
+	JScrollPane scrollPaneYearPeli = new JScrollPane(tablaYearPeli);
+	scrollPaneYearPeli.setBounds(43, 511, 296, 90);
+	frame.getContentPane().add(scrollPaneYearPeli);	
 	
 	
 	//LABEL
 	JLabel lblId = new JLabel("id");
-	lblId.setBounds(702, 114, 70, 15);
+	lblId.setBounds(438, 197, 70, 15);
 	frame.getContentPane().add(lblId);
 	
 	JLabel lblNombre = new JLabel("nombre");
-	lblNombre.setBounds(702, 141, 70, 15);
+	lblNombre.setBounds(438, 224, 70, 15);
 	frame.getContentPane().add(lblNombre);
 	
 	JLabel lblApellido = new JLabel("apellido");
-	lblApellido.setBounds(702, 168, 70, 15);
+	lblApellido.setBounds(438, 251, 70, 15);
 	frame.getContentPane().add(lblApellido);
 	
 	JLabel lblEdad = new JLabel("edad");
-	lblEdad.setBounds(702, 195, 70, 15);
+	lblEdad.setBounds(438, 278, 70, 15);
 	frame.getContentPane().add(lblEdad);
 	
 	JLabel lblTelefono = new JLabel("telefono");
-	lblTelefono.setBounds(702, 222, 70, 15);
+	lblTelefono.setBounds(438, 305, 70, 15);
 	frame.getContentPane().add(lblTelefono);
 	
 	JLabel lblNewLabel = new JLabel("codigo");
-	lblNewLabel.setBounds(43, 118, 70, 15);
+	lblNewLabel.setBounds(98, 195, 70, 15);
 	frame.getContentPane().add(lblNewLabel);
 	
 	JLabel lblNombre_1 = new JLabel("nombre");
-	lblNombre_1.setBounds(43, 141, 70, 15);
+	lblNombre_1.setBounds(98, 218, 70, 15);
 	frame.getContentPane().add(lblNombre_1);
 	
 	JLabel lblDuracion = new JLabel("duracion");
-	lblDuracion.setBounds(43, 168, 70, 15);
+	lblDuracion.setBounds(98, 245, 70, 15);
 	frame.getContentPane().add(lblDuracion);
 	
 	JLabel lblEdad_1 = new JLabel("genero");
-	lblEdad_1.setBounds(215, 141, 70, 15);
+	lblEdad_1.setBounds(98, 276, 70, 15);
 	frame.getContentPane().add(lblEdad_1);
 	
 	JLabel lblAo = new JLabel("año");
-	lblAo.setBounds(215, 168, 70, 15);
+	lblAo.setBounds(98, 303, 70, 15);
 	frame.getContentPane().add(lblAo);
+	
+	JLabel lblAoMinimoPelicula = new JLabel("año minimo pelicula: ");
+	lblAoMinimoPelicula.setBounds(31, 479, 149, 15);
+	frame.getContentPane().add(lblAoMinimoPelicula);
 	
 	//TEXTFIELDS
 	txtIDu = new JTextField();
 	txtIDu.setEditable(false);
-	txtIDu.setBounds(775, 112, 114, 19);
+	txtIDu.setBounds(511, 195, 114, 19);
 	frame.getContentPane().add(txtIDu);
 	txtIDu.setColumns(10);
 	
 	txtnomU = new JTextField();
 	txtnomU.setColumns(10);
-	txtnomU.setBounds(775, 139, 114, 19);
+	txtnomU.setBounds(511, 222, 114, 19);
 	frame.getContentPane().add(txtnomU);
 	
 	txtApeU = new JTextField();
 	txtApeU.setColumns(10);
-	txtApeU.setBounds(775, 166, 114, 19);
+	txtApeU.setBounds(511, 249, 114, 19);
 	frame.getContentPane().add(txtApeU);
 	
 	txtEdadU = new JTextField();
 	txtEdadU.setColumns(10);
-	txtEdadU.setBounds(775, 193, 114, 19);
+	txtEdadU.setBounds(511, 276, 114, 19);
 	frame.getContentPane().add(txtEdadU);
 	
 	txtTlfU = new JTextField();
 	txtTlfU.setColumns(10);
-	txtTlfU.setBounds(775, 220, 114, 19);
+	txtTlfU.setBounds(511, 303, 114, 19);
 	frame.getContentPane().add(txtTlfU);
 	
 	txtCodP = new JTextField();
 	txtCodP.setEditable(false);
 	txtCodP.setColumns(10);
-	txtCodP.setBounds(126, 114, 79, 19);
+	txtCodP.setBounds(181, 191, 96, 19);
 	frame.getContentPane().add(txtCodP);
 	
 	txtNomP = new JTextField();
 	txtNomP.setColumns(10);
-	txtNomP.setBounds(126, 137, 79, 19);
+	txtNomP.setBounds(181, 214, 96, 19);
 	frame.getContentPane().add(txtNomP);
 	
 	txtDuracionP = new JTextField();
 	txtDuracionP.setColumns(10);
-	txtDuracionP.setBounds(126, 164, 79, 19);
+	txtDuracionP.setBounds(181, 241, 96, 19);
 	frame.getContentPane().add(txtDuracionP);
 	
 	txtGeneroP = new JTextField();
 	txtGeneroP.setColumns(10);
-	txtGeneroP.setBounds(298, 137, 79, 19);
+	txtGeneroP.setBounds(181, 272, 96, 19);
 	frame.getContentPane().add(txtGeneroP);
 	
 	txtYearP = new JTextField();
 	txtYearP.setColumns(10);
-	txtYearP.setBounds(298, 164, 79, 19);
+	txtYearP.setBounds(181, 299, 96, 19);
 	frame.getContentPane().add(txtYearP);
 	
 	//BOTON
@@ -286,7 +321,12 @@ public class App {
 			txtIDu.setText("");
 		}
 	});
-	btnAddUs.setBounds(735, 249, 58, 25);
+	
+	txtYearMin = new JTextField();
+	txtYearMin.setBounds(190, 477, 58, 19);
+	frame.getContentPane().add(txtYearMin);
+	txtYearMin.setColumns(10);
+	btnAddUs.setBounds(469, 388, 58, 25);
 	frame.getContentPane().add(btnAddUs);
 	
 	JButton btndelUs = new JButton("-");
@@ -319,7 +359,7 @@ public class App {
 			txtIDu.setText("");
 		}
 	});
-	btndelUs.setBounds(802, 249, 58, 25);
+	btndelUs.setBounds(536, 388, 58, 25);
 	frame.getContentPane().add(btndelUs);
 	
 	JButton btnActUs = new JButton("Actualizar");
@@ -328,7 +368,6 @@ public class App {
 		public void mouseClicked(MouseEvent e) {
 			Usuario usuAct=new Usuario();
 			
-			Usuario usuIns=new Usuario();
 			String nombre=txtnomU.getText();
 			String ape=txtApeU.getText();
 			int edad=Integer.parseInt(txtEdadU.getText());
@@ -356,6 +395,7 @@ public class App {
 				Object[]fila= {us.getId(), us.getNombre(), us.getApellido(), us.getEdad(), us.getTelefono()};
 				modeloUser.addRow(fila);
 			}
+			
 			txtnomU.setText("");
 			txtApeU.setText("");
 			txtEdadU.setText("");
@@ -363,7 +403,7 @@ public class App {
 			txtIDu.setText("");
 		}
 	});
-	btnActUs.setBounds(735, 293, 125, 25);
+	btnActUs.setBounds(469, 432, 125, 25);
 	frame.getContentPane().add(btnActUs);
 	
 	
@@ -400,7 +440,7 @@ public class App {
 			txtYearP.setText("");
 		}
 	});
-	btnAddPe.setBounds(136, 205, 58, 25);
+	btnAddPe.setBounds(123, 388, 58, 25);
 	frame.getContentPane().add(btnAddPe);
 	
 	JButton btnDelPe = new JButton("-");
@@ -431,7 +471,7 @@ public class App {
 			txtYearP.setText("");
 		}
 	});
-	btnDelPe.setBounds(203, 205, 58, 25);
+	btnDelPe.setBounds(190, 388, 58, 25);
 	frame.getContentPane().add(btnDelPe);
 	
 	JButton btnActPe = new JButton("Actualizar");
@@ -473,29 +513,49 @@ public class App {
 			txtYearP.setText("");
 		}
 	});
-	btnActPe.setBounds(136, 249, 125, 25);
+	btnActPe.setBounds(123, 432, 125, 25);
 	frame.getContentPane().add(btnActPe);
+		
 	
-	JLabel lblAoMinimoPelicula = new JLabel("año minimo pelicula: ");
-	lblAoMinimoPelicula.setBounds(31, 339, 149, 15);
-	frame.getContentPane().add(lblAoMinimoPelicula);
-	
-	textField = new JTextField();
-	textField.setBounds(190, 337, 58, 19);
-	frame.getContentPane().add(textField);
-	textField.setColumns(10);
-	
+	//Peliculas filtradas
 	JButton btnFiltrar = new JButton("Filtrar");
-	btnFiltrar.setBounds(260, 334, 79, 25);
+	btnFiltrar.addMouseListener(new MouseAdapter() {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			
+			modeloYearPeli.setRowCount(0);
+			int year= Integer.parseInt(txtYearMin.getText());
+			List<Pelicula> peliculasLimite =peliculaDAO.selectPeliculaSegunYear(year);
+			
+			for(Pelicula peli:peliculasLimite) {
+				Object[]fila= {peli.getCodigo(), peli.getNombre(), peli.getDuracion(), peli.getGenero(), peli.getYear()};
+				modeloYearPeli.addRow(fila);
+			}
+			
+			txtCodP.setText("");
+			txtNomP.setText("");
+			txtDuracionP.setText("");
+			txtGeneroP.setText("");
+			txtYearP.setText("");
+		}
+	});
+	btnFiltrar.setBounds(260, 474, 79, 25);
 	frame.getContentPane().add(btnFiltrar);
 	
-	JScrollPane scrollPanePeli_1 = new JScrollPane((Component) null);
-	scrollPanePeli_1.setBounds(43, 371, 296, 90);
-	frame.getContentPane().add(scrollPanePeli_1);
+	JCheckBox chckbxMostrarUsuarios = new JCheckBox("Mostrar usuarios +18");
+	chckbxMostrarUsuarios.setBounds(438, 475, 197, 23);
+	frame.getContentPane().add(chckbxMostrarUsuarios);
+	
+	JLabel lblPeliculas = new JLabel("PELICULAS");
+	lblPeliculas.setBounds(134, 37, 96, 15);
+	frame.getContentPane().add(lblPeliculas);
+	
+	JLabel lblUsuarios = new JLabel("USUARIOS");
+	lblUsuarios.setBounds(497, 37, 97, 15);
+	frame.getContentPane().add(lblUsuarios);
 	
 	
 		
 		
-		
-	}
-}
+	}//initialize
+}//class
